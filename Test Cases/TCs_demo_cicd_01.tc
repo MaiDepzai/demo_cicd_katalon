@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>TCs_demo_cicd_01</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>17f6f10f-9df0-430c-a64d-748c9fc924a7</testCaseGuid>
+</TestCaseEntity>
