@@ -19,7 +19,7 @@ import org.openqa.selenium.Keys as Keys
 
 WebUI.openBrowser('https://digibank-identity-sit.msb.com.vn/auth/realms/employee/protocol/openid-connect/auth?response_type=code&client_id=employee-client&state=eEdDcnBnTm1VLmdSQ2kzbTMwWURteEp-VFhvSGRvY2VmcWl2MGdhfmNld09w&redirect_uri=https%3A%2F%2Fdigibank-employee-sit.msb.com.vn%2Frb%2Fselect-context&scope=openid&code_challenge=JLDFUEyJ02ugGMowKfOM1i999UcF9eonyzxLiJDq1kk&code_challenge_method=S256&nonce=eEdDcnBnTm1VLmdSQ2kzbTMwWURteEp-VFhvSGRvY2VmcWl2MGdhfmNld09w')
 
-WebUI.waitForElementVisible(findTestObject('MHLogin/txtUsername'), 3)
+WebUI.waitForElementVisible(findTestObject('MHLogin/txtUsername'), 2)
 
 WebUI.setText(findTestObject('MHLogin/txtUsername'), 'admin')
 
