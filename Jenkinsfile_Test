@@ -2,17 +2,18 @@ pipeline {
     agent any
 
     environment {
-        KATALON_IMAGE = "katalonstudio/katalon"  // Docker image chính thức
-        PROJECT_PATH = "/workspace/demo_cicd_katalon"  // path container map với workspace
-        TEST_SUITE = "Test Suites/TS_demo_01"  // Test Suite muốn chạy
-        REPORT_PATH = "Reports"  // nơi lưu báo cáo
+        KATALON_IMAGE = 'katalonstudio/katalon:latest'
+        PROJECT_PATH = '/katalon/project'
     }
 
     stages {
         stage('Checkout') {
             steps {
                 echo 'Checkout source code from GitHub...'
-                checkout scm
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url: 'https://github.com/MaiDepzai/demo_cicd_katalon.git']]
+                ])
             }
         }
 
@@ -20,16 +21,15 @@ pipeline {
             steps {
                 echo 'Running Katalon Test Suite inside Docker...'
                 script {
-                    docker.image("${KATALON_IMAGE}:latest").inside("-u root:root -v $WORKSPACE:$PROJECT_PATH") {
+                    docker.image(env.KATALON_IMAGE).inside {
                         sh """
-                            katalon-execute.sh \
-                            -browserType=Chrome \
-                            -projectPath=${PROJECT_PATH} \
-                            -retry=0 \
-                            -testSuitePath='${TEST_SUITE}' \
-                            -executionProfile='default' \
-                            -reportFolder=${PROJECT_PATH}/${REPORT_PATH} \
-                            -consoleLog
+                            katalon-execute.sh -runMode=console \
+                                -projectPath="${WORKSPACE}/demo_cicd_katalon.prj" \
+                                -testSuitePath="Test Suites/TS_demo_01" \
+                                -browserType="Chrome" \
+                                -retry=0 \
+                                -reportFolder="Reports" \
+                                -reportFileName="report"
                         """
                     }
                 }
@@ -38,18 +38,18 @@ pipeline {
 
         stage('Archive Reports') {
             steps {
-                echo 'Archiving Katalon reports...'
-                archiveArtifacts artifacts: "${REPORT_PATH}/**", allowEmptyArchive: true
+                echo 'Archiving test reports...'
+                archiveArtifacts artifacts: 'Reports/**/*', fingerprint: true
             }
         }
     }
 
     post {
-        success {
-            echo 'Katalon tests completed successfully!'
-        }
         failure {
             echo 'Katalon tests failed!'
+        }
+        success {
+            echo 'Katalon tests succeeded!'
         }
     }
 }
