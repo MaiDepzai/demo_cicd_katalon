@@ -17,16 +17,17 @@ pipeline {
             }
         }
 
-        stage('Run Katalon Tests') {
+        stage('Run Katalon Tests (Docker)') {
             steps {
-                echo "Running Katalon Test Suite locally on Mac..."
+                echo "Running Katalon Test Suite using Docker container..."
                 sh '''
-                    cd "/Users/maidt11/tools/katalon_engine/Katalon_Studio_Engine_MacOS_Arm64-10.4.0/Katalon Studio Engine.app"
-                    ./Contents/MacOS/katalonc -noSplash -runMode=console \
-                    -projectPath="/Users/maidt11/Documents/MaiDT11/Testing/Hỗ trợ Automation/Test_Demo/demo_cicd_katalon/demo_cicd_katalon.prj" \
-                    -testSuitePath="Test Suites/TS_demo_01" \
-                    -browserType="Chrome" \
-                    -reportFolder="./Reports"
+                    docker run --rm -v $PWD:/katalon/katalon/source \
+                        katalonstudio/katalon:latest katalonc \
+                        -runMode=console \
+                        -projectPath="/katalon/katalon/source/demo_cicd_katalon.prj" \
+                        -testSuitePath="Test Suites/TS_demo_01" \
+                        -browserType="Chrome" \
+                        -reportFolder="Reports"
                 '''
             }
         }
