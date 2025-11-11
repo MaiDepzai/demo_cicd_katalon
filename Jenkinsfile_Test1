@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        KATALON_PATH = "/var/jenkins_home/tools/katalon_engine/Katalon Studio Engine.app/Contents/MacOS/katalonc"
+        KATALON_PATH = "/var/jenkins_home/tools/katalon_engine/Katalon Studio Engine.app"
         PROJECT_PATH = "${env.WORKSPACE}/demo_cicd_katalon.prj"
         TEST_SUITE = "Test Suites/TS_demo_01"
         REPORT_FOLDER = "${env.WORKSPACE}/Reports"
