@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    environment {
+        KATALON_PATH = "/Users/maidt11/tools/katalon_engine/Katalon_Studio_Engine_MacOS_Arm64-10.4.0/Katalon Studio Engine.app/Contents/MacOS/katalonc"
+        PROJECT_PATH = "/var/jenkins_home/workspace/test_01_demo_katalon/demo_cicd_katalon.prj"
+        TEST_SUITE = "Test Suites/TS_demo_01"
+        REPORT_FOLDER = "Reports"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/MaiDepzai/demo_cicd_katalon.git',
+                    credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID'
+            }
+        }
+        stage('Run Katalon Tests') {
+            steps {
+                echo "Running Katalon Test Suite locally..."
+                sh """
+                "${KATALON_PATH}" -runMode=console -projectPath="${PROJECT_PATH}" \
+                -testSuitePath="${TEST_SUITE}" -browserType="Chrome" \
+                -reportFolder="${REPORT_FOLDER}"
+                """
+            }
+        }
+        stage('Archive Reports') {
+            steps {
+                archiveArtifacts artifacts: "${REPORT_FOLDER}/**/*", allowEmptyArchive: true
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+        failure {
+            echo 'Katalon tests failed!'
+        }
+    }
+}
